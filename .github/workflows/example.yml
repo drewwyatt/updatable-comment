@@ -25,14 +25,65 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.PAT }}
+      - uses: ./
+        id: comment
+        with:
+          comment: |
+            ### 🤖 /repackage
+            ⌛️ installing dependencies...
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install
         run: npm ci
+      - uses: ./
+        with:
+          id: ${{ steps.comment.id }}
+          comment: |
+            ### 🤖 /repackage
+            ⌛️ building and packaging...
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and package
         run: |
           npm run build
           npm run package
+      - uses: ./
+        with:
+          id: ${{ steps.comment.id }}
+          comment: |
+            ### 🤖 /repackage
+            ⌛️ checking for changes...
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: Commit Changes
         id: auto-commit-action
         with:
           commit_message: repackage
+
+      - if: steps.auto-commit-action.outputs.changes_detected == 'false'
+        uses: ./
+        with:
+          id: ${{ steps.comment.id }}
+          comment: |
+            ### 🤖 /repackage
+            ✅ No changes detected!
+            (there was nothing to repackage)
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - if: steps.auto-commit-action.outputs.changes_detected == 'true'
+        uses: ./
+        with:
+          id: ${{ steps.comment.id }}
+          comment: |
+            ### 🤖 /repackage
+            ✅ Changes committed and pushed!
+
+            ${{ steps.auto-commit-action.outputs.commit_hash }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - if: ${{ failure() }}
+        uses: ./
+        with:
+          id: ${{ steps.comment.id }}
+          comment: |
+            ### 🤖 /repackage
+            🚫 Something went wrong...
+          github-token: ${{ secrets.GITHUB_TOKEN }}
