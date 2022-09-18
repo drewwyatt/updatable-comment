@@ -5,6 +5,12 @@ inputs:
   id:
     required: false
     description: If not supplied, this action will generate one for you.
+  comment:
+    required: true
+    description: The comment body
+  token:
+    required: true
+    description: Github token
 outputs:
   id:
     description: The supplied or generated comment id (for future updates)
