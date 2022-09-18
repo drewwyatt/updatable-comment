@@ -1,11 +1,13 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: Updatable Comment
+description: Update comments as your workflow runs.
+author: Drew Wyatt <drew.j.wyatt@gmail.com>
 inputs:
-  milliseconds: # change this
-    required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  id:
+    required: false
+    description: If not supplied, this action will generate one for you.
+outputs:
+  id:
+    description: The supplied or generated comment id (for future updates)
 runs:
   using: 'node16'
   main: 'dist/index.js'
