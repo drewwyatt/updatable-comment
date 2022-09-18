@@ -88,17 +88,17 @@ exports.updateComment = updateComment;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.token = exports.id = exports.comment = void 0;
+exports.githubToken = exports.id = exports.comment = void 0;
 const core_1 = __nccwpck_require__(2186);
 var Input;
 (function (Input) {
     Input["Comment"] = "comment";
     Input["Id"] = "id";
-    Input["Token"] = "token";
+    Input["GithubToken"] = "github-token";
 })(Input || (Input = {}));
 exports.comment = (0, core_1.getInput)(Input.Comment, { required: true });
 exports.id = (0, core_1.getInput)(Input.Id);
-exports.token = (0, core_1.getInput)(Input.Token, { required: true });
+exports.githubToken = (0, core_1.getInput)(Input.GithubToken, { required: true });
 
 
 /***/ }),
@@ -144,13 +144,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const inputs = __importStar(__nccwpck_require__(6180));
+const outputs = __importStar(__nccwpck_require__(5314));
 const comments_1 = __nccwpck_require__(1910);
 const utils_1 = __nccwpck_require__(918);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         core.debug('Creating octokit...');
-        const octokit = github.getOctokit(inputs.token);
+        const octokit = github.getOctokit(inputs.githubToken);
         const id = (_a = inputs.id) !== null && _a !== void 0 ? _a : (0, utils_1.generateId)();
         core.debug(`Comment id: "${id}"`);
         core.info('Checking for previous comments...');
@@ -166,6 +167,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
             core.info('No previous comment found, creating...');
             yield (0, comments_1.createComment)(octokit, id, inputs.comment);
         }
+        outputs.setId(id);
     }
     catch (error) {
         if (error instanceof Error)
@@ -173,6 +175,24 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 run();
+
+
+/***/ }),
+
+/***/ 5314:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.setId = void 0;
+const core_1 = __nccwpck_require__(2186);
+var Output;
+(function (Output) {
+    Output["Id"] = "id";
+})(Output || (Output = {}));
+const setId = (value) => (0, core_1.setOutput)(Output.Id, value);
+exports.setId = setId;
 
 
 /***/ }),

@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 
 import * as inputs from './inputs'
+import * as outputs from './outputs'
 import { createComment, deleteComment, findWithId } from './comments'
 import { generateId } from './utils'
 
@@ -25,6 +26,8 @@ const run = async () => {
       core.info('No previous comment found, creating...')
       await createComment(octokit, id, inputs.comment)
     }
+
+    outputs.setId(id)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
