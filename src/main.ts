@@ -8,7 +8,7 @@ import { generateId } from './utils'
 const run = async () => {
   try {
     core.debug('Creating octokit...')
-    const octokit = github.getOctokit(inputs.token)
+    const octokit = github.getOctokit(inputs.githubToken)
 
     const id = inputs.id ?? generateId()
     core.debug(`Comment id: "${id}"`)

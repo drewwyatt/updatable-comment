@@ -8,7 +8,7 @@ inputs:
   comment:
     required: true
     description: The comment body
-  token:
+  github-token:
     required: true
     description: Github token
 outputs:
