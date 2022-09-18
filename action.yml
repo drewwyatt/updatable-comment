@@ -11,9 +11,13 @@ inputs:
   github-token:
     required: true
     description: Github token
+  strategy:
+    description: '"update" | "delete" (defaults to "update")'
+    required: true
+    default: update
 outputs:
   id:
     description: The supplied or generated comment id (for future updates)
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: node16
+  main: dist/index.js
