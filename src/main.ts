@@ -3,7 +3,7 @@ import * as github from '@actions/github'
 
 import * as inputs from './inputs'
 import * as outputs from './outputs'
-import { createComment, deleteComment, findWithId } from './comments'
+import { createComment, deleteComment, findWithId, updateComment } from './comments'
 import { generateId } from './utils'
 
 const run = async () => {
@@ -18,10 +18,15 @@ const run = async () => {
     const prevComment = await findWithId(octokit, id)
     if (prevComment) {
       core.info(`Found previous comment: ${prevComment.id}`)
-      core.info('Deleting previous comment...')
-      await deleteComment(octokit, prevComment)
-      core.info('Recreating...')
-      await createComment(octokit, id, inputs.comment)
+      if (inputs.strategy === inputs.Strategy.Delete) {
+        core.info('Deleting previous comment...')
+        await deleteComment(octokit, prevComment)
+        core.info('Recreating...')
+        await createComment(octokit, id, inputs.comment)
+      } else {
+        core.info('Updating comment...')
+        await updateComment(octokit, prevComment, id, inputs.comment)
+      }
     } else {
       core.info('No previous comment found, creating...')
       await createComment(octokit, id, inputs.comment)

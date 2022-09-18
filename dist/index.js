@@ -88,17 +88,36 @@ exports.updateComment = updateComment;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.githubToken = exports.id = exports.comment = void 0;
+exports.strategy = exports.githubToken = exports.id = exports.comment = exports.Strategy = void 0;
 const core_1 = __nccwpck_require__(2186);
 var Input;
 (function (Input) {
     Input["Comment"] = "comment";
     Input["Id"] = "id";
     Input["GithubToken"] = "github-token";
+    Input["Strategy"] = "strategy";
 })(Input || (Input = {}));
+var Strategy;
+(function (Strategy) {
+    Strategy["Update"] = "update";
+    Strategy["Delete"] = "delete";
+})(Strategy = exports.Strategy || (exports.Strategy = {}));
+function assertIsStrategy(input) {
+    if (![Strategy.Delete, Strategy.Update].includes(input)) {
+        throw new Error(`found invalud inputs.strategy value of "${input}"
+    allowed values are: ${[Object.values(Strategy).join(' | ')]}
+    `);
+    }
+}
+const parseStrategy = (input) => {
+    const lowercased = input.toLowerCase();
+    assertIsStrategy(lowercased);
+    return lowercased;
+};
 exports.comment = (0, core_1.getInput)(Input.Comment, { required: true });
 exports.id = (0, core_1.getInput)(Input.Id);
 exports.githubToken = (0, core_1.getInput)(Input.GithubToken, { required: true });
+exports.strategy = parseStrategy((0, core_1.getInput)(Input.Strategy, { required: true, trimWhitespace: true }));
 
 
 /***/ }),
@@ -158,10 +177,16 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const prevComment = yield (0, comments_1.findWithId)(octokit, id);
         if (prevComment) {
             core.info(`Found previous comment: ${prevComment.id}`);
-            core.info('Deleting previous comment...');
-            yield (0, comments_1.deleteComment)(octokit, prevComment);
-            core.info('Recreating...');
-            yield (0, comments_1.createComment)(octokit, id, inputs.comment);
+            if (inputs.strategy === inputs.Strategy.Delete) {
+                core.info('Deleting previous comment...');
+                yield (0, comments_1.deleteComment)(octokit, prevComment);
+                core.info('Recreating...');
+                yield (0, comments_1.createComment)(octokit, id, inputs.comment);
+            }
+            else {
+                core.info('Updating comment...');
+                yield (0, comments_1.updateComment)(octokit, prevComment, id, inputs.comment);
+            }
         }
         else {
             core.info('No previous comment found, creating...');
