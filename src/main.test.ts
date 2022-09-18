@@ -7,14 +7,13 @@ test('test runs', () => {
   process.env['GITHUB_REPOSITORY'] = 'drewwyatt/updatable-comment'
   process.env['INPUT_COMMENT'] = 'lol'
   process.env['INPUT_TOKEN'] = 'wow'
-  const np = process.execPath
-  const ip = path.join(__dirname, '..', 'lib', 'main.js')
-  const options: cp.ExecFileSyncOptions = {
-    env: process.env,
-  }
-  try {
-    console.log(cp.execFileSync(np, [ip], options).toString())
-  } catch (e: any) {
-    console.log(e.message)
-  }
+
+  // TODO: use mock-service-worker or something here
+  // const np = process.execPath
+  // const ip = path.join(__dirname, '..', 'lib', 'main.js')
+  // const options: cp.ExecFileSyncOptions = {
+  //   env: process.env,
+  // }
+
+  // console.log(cp.execFileSync(np, [ip], options).toString())
 })
