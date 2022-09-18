@@ -36,7 +36,7 @@ jobs:
         run: npm ci
       - uses: ./
         with:
-          id: ${{ steps.comment.id }}
+          id: ${{ steps.comment.outputs.id }}
           comment: |
             ### 🤖 /repackage
             ⌛️ building and packaging...
@@ -47,7 +47,7 @@ jobs:
           npm run package
       - uses: ./
         with:
-          id: ${{ steps.comment.id }}
+          id: ${{ steps.comment.outputs.id }}
           comment: |
             ### 🤖 /repackage
             ⌛️ checking for changes...
@@ -61,7 +61,7 @@ jobs:
       - if: steps.auto-commit-action.outputs.changes_detected == 'false'
         uses: ./
         with:
-          id: ${{ steps.comment.id }}
+          id: ${{ steps.comment.outputs.id }}
           comment: |
             ### 🤖 /repackage
             ✅ No changes detected!
@@ -71,7 +71,7 @@ jobs:
       - if: steps.auto-commit-action.outputs.changes_detected == 'true'
         uses: ./
         with:
-          id: ${{ steps.comment.id }}
+          id: ${{ steps.comment.outputs.id }}
           comment: |
             ### 🤖 /repackage
             ✅ Changes committed and pushed!
@@ -82,7 +82,7 @@ jobs:
       - if: ${{ failure() }}
         uses: ./
         with:
-          id: ${{ steps.comment.id }}
+          id: ${{ steps.comment.outputs.id }}
           comment: |
             ### 🤖 /repackage
             🚫 Something went wrong...
