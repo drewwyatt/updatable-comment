@@ -114,8 +114,9 @@ const parseStrategy = (input) => {
     assertIsStrategy(lowercased);
     return lowercased;
 };
+const idInput = (0, core_1.getInput)(Input.Id);
 exports.comment = (0, core_1.getInput)(Input.Comment, { required: true });
-exports.id = (0, core_1.getInput)(Input.Id);
+exports.id = idInput ? idInput : null;
 exports.githubToken = (0, core_1.getInput)(Input.GithubToken, { required: true });
 exports.strategy = parseStrategy((0, core_1.getInput)(Input.Strategy, { required: true, trimWhitespace: true }));
 

@@ -26,8 +26,10 @@ const parseStrategy = (input: string): Strategy => {
   return lowercased
 }
 
+const idInput = getInput(Input.Id)
+
 export const comment = getInput(Input.Comment, { required: true })
-export const id = getInput(Input.Id)
+export const id = idInput ? idInput : null
 export const githubToken = getInput(Input.GithubToken, { required: true })
 export const strategy = parseStrategy(
   getInput(Input.Strategy, { required: true, trimWhitespace: true }),
